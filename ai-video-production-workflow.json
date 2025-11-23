@@ -1,0 +1,1016 @@
+{
+  "name": "AI Video Production Workflow (30s Cinematic)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "start",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "content": "## Input Configuration\n\nProvide your video details below",
+        "height": 200,
+        "width": 300
+      },
+      "id": "note-input",
+      "name": "Input Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [220, 80]
+    },
+    {
+      "parameters": {
+        "formTitle": "Video Production Input",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Hook",
+              "fieldType": "text",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Main Idea",
+              "fieldType": "textarea",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Client Name",
+              "fieldType": "text",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Tone/Style",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  { "option": "Cinematic Dark" },
+                  { "option": "Bright & Energetic" },
+                  { "option": "Professional Corporate" },
+                  { "option": "Luxury & Premium" },
+                  { "option": "Playful & Fun" }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Voice Selection",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  { "option": "Adam - Deep Male" },
+                  { "option": "Rachel - Natural Female" },
+                  { "option": "Josh - Young Male" },
+                  { "option": "Bella - Energetic Female" }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "id": "input-form",
+      "name": "Production Input Form",
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2,
+      "position": [240, 500],
+      "webhookId": "video-production-input"
+    },
+    {
+      "parameters": {
+        "content": "## 1. Script Creation\n\nGenerates and refines script to 30 seconds",
+        "height": 80,
+        "width": 280,
+        "color": 4
+      },
+      "id": "note-script",
+      "name": "Script Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [520, 200]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a professional scriptwriter specializing in short-form cinematic video content. Create compelling, emotionally engaging scripts that fit within 30 seconds of spoken content (approximately 75-85 words)."
+            },
+            {
+              "role": "user",
+              "content": "=Create a 30-second cinematic video script.\n\nHook: {{ $json.Hook }}\nMain Idea: {{ $json['Main Idea'] }}\nTone: {{ $json['Tone/Style'] }}\n\nRequirements:\n- Maximum 80 words for 30-second delivery\n- Clear scene breaks marked with [SCENE X]\n- Strong opening hook (first 3 seconds)\n- Emotional beats throughout\n- Powerful closing CTA\n- Mark [INTRO] and [OUTRO] for talking head segments\n\nFormat:\n[INTRO] - Opening talking head text\n[SCENE 1] - Description\n...\n[OUTRO] - Closing talking head text"
+            }
+          ]
+        }
+      },
+      "id": "script-generation",
+      "name": "Generate Initial Script",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [540, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a script editor. Refine scripts for clarity, pacing, and emotional impact. Ensure exactly 30 seconds of spoken content."
+            },
+            {
+              "role": "user",
+              "content": "=Refine this script to EXACTLY 30 seconds (75-80 words max):\n\n{{ $json.message.content }}\n\nEnsure:\n- Punchy, clear sentences\n- Perfect pacing for voiceover\n- Strong emotional beats\n- Scene transitions that flow cinematically\n\nOutput the final script with scene markers."
+            }
+          ]
+        }
+      },
+      "id": "script-refinement",
+      "name": "Refine Script to 30s",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [760, 300],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai-credentials",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const script = $input.first().json.message.content;\n\n// Parse scenes from script\nconst scenes = [];\nconst sceneRegex = /\\[SCENE\\s*(\\d+)\\]([^\\[]*)/gi;\nconst introRegex = /\\[INTRO\\]([^\\[]*)/i;\nconst outroRegex = /\\[OUTRO\\]([^\\[]*)/i;\n\n// Extract intro\nconst introMatch = script.match(introRegex);\nif (introMatch) {\n  scenes.push({\n    type: 'intro',\n    number: 0,\n    text: introMatch[1].trim(),\n    filename: '01_START'\n  });\n}\n\n// Extract scenes\nlet match;\nlet sceneNum = 2;\nwhile ((match = sceneRegex.exec(script)) !== null) {\n  scenes.push({\n    type: 'scene',\n    number: parseInt(match[1]),\n    text: match[2].trim(),\n    filename: String(sceneNum).padStart(2, '0')\n  });\n  sceneNum++;\n}\n\n// Extract outro\nconst outroMatch = script.match(outroRegex);\nif (outroMatch) {\n  scenes.push({\n    type: 'outro',\n    number: 99,\n    text: outroMatch[1].trim(),\n    filename: String(sceneNum).padStart(2, '0') + '_END'\n  });\n}\n\nreturn {\n  fullScript: script,\n  scenes: scenes,\n  sceneCount: scenes.length,\n  introText: introMatch ? introMatch[1].trim() : '',\n  outroText: outroMatch ? outroMatch[1].trim() : ''\n};"
+      },
+      "id": "parse-script",
+      "name": "Parse Script Scenes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [980, 300]
+    },
+    {
+      "parameters": {
+        "content": "## 2. Voiceover Generation\n\nElevenLabs voice synthesis",
+        "height": 80,
+        "width": 280,
+        "color": 5
+      },
+      "id": "note-voice",
+      "name": "Voice Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1180, 200]
+    },
+    {
+      "parameters": {
+        "resource": "textToSpeech",
+        "voiceId": "={{ $('Production Input Form').item.json['Voice Selection'].includes('Adam') ? 'pNInz6obpgDQGcFmaJgB' : $('Production Input Form').item.json['Voice Selection'].includes('Rachel') ? '21m00Tcm4TlvDq8ikWAM' : $('Production Input Form').item.json['Voice Selection'].includes('Josh') ? 'TxGEqnHWrfWFTfGW9XjX' : 'EXAVITQu4vr4xnSDxMaL' }}",
+        "text": "={{ $json.fullScript.replace(/\\[SCENE \\d+\\]|\\[INTRO\\]|\\[OUTRO\\]/gi, '') }}"
+      },
+      "id": "elevenlabs-voice",
+      "name": "Generate Voiceover",
+      "type": "n8n-nodes-base.elevenLabs",
+      "typeVersion": 1,
+      "position": [1200, 300],
+      "credentials": {
+        "elevenLabsApi": {
+          "id": "elevenlabs-credentials",
+          "name": "ElevenLabs API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=voiceover_{{ $('Production Input Form').item.json['Client Name'] }}.mp3",
+        "binaryPropertyName": "data"
+      },
+      "id": "save-voiceover",
+      "name": "Save Voiceover MP3",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [1420, 300]
+    },
+    {
+      "parameters": {
+        "content": "## 3 & 4. Image Generation\n\nMidJourney scene images via API",
+        "height": 80,
+        "width": 280,
+        "color": 6
+      },
+      "id": "note-images",
+      "name": "Images Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1180, 480]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "split-scenes",
+      "name": "Split Into Scenes",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [1200, 580]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mymidjourney.ai/v1/imagine",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.text }}, cinematic photography, {{ $('Production Input Form').item.json['Tone/Style'] }} aesthetic, 8k, dramatic lighting, shallow depth of field, professional color grading --ar 9:16 --style raw --v 6"
+            }
+          ]
+        }
+      },
+      "id": "midjourney-generate",
+      "name": "Generate Scene Images",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1420, 580],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "midjourney-credentials",
+          "name": "MidJourney API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.mymidjourney.ai/v1/task/{{ $json.taskId }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "midjourney-poll",
+      "name": "Poll for Image Result",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1640, 580],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "midjourney-credentials",
+          "name": "MidJourney API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status }}",
+              "value2": "completed"
+            }
+          ]
+        }
+      },
+      "id": "check-image-status",
+      "name": "Image Ready?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1860, 580]
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "id": "wait-image",
+      "name": "Wait 10s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [1860, 760]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.imageUrl }}",
+        "options": {}
+      },
+      "id": "download-image",
+      "name": "Download Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [2080, 580]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $('Split Into Scenes').item.json.filename }}.jpg",
+        "binaryPropertyName": "data"
+      },
+      "id": "save-image",
+      "name": "Save Scene Image",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [2300, 580]
+    },
+    {
+      "parameters": {
+        "content": "## 4.3 Upsampling\n\nFirst and last images only",
+        "height": 80,
+        "width": 280,
+        "color": 7
+      },
+      "id": "note-upscale",
+      "name": "Upscale Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [2480, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.filename }}",
+              "operation": "contains",
+              "value2": "START"
+            },
+            {
+              "value1": "={{ $json.filename }}",
+              "operation": "contains",
+              "value2": "END"
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "id": "filter-upscale",
+      "name": "Is Start or End?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [2500, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.topazlabs.com/v1/enhance",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image",
+              "value": "={{ $binary.data.base64 }}"
+            },
+            {
+              "name": "scale",
+              "value": "2"
+            },
+            {
+              "name": "model",
+              "value": "standard"
+            }
+          ]
+        }
+      },
+      "id": "upscale-image",
+      "name": "Upscale Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [2720, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "topaz-credentials",
+          "name": "Topaz Labs API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 5. Talking Heads\n\nHeyGen avatar generation",
+        "height": 80,
+        "width": 280,
+        "color": 2
+      },
+      "id": "note-heygen",
+      "name": "HeyGen Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [2940, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.heygen.com/v2/video/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video_inputs\": [{\n    \"character\": {\n      \"type\": \"talking_photo\",\n      \"talking_photo_id\": \"{{ $json.uploadId }}\"\n    },\n    \"voice\": {\n      \"type\": \"elevenlabs\",\n      \"voice_id\": \"{{ $('Production Input Form').item.json['Voice Selection'].includes('Adam') ? 'pNInz6obpgDQGcFmaJgB' : '21m00Tcm4TlvDq8ikWAM' }}\",\n      \"input_text\": \"{{ $json.type === 'intro' ? $('Parse Script Scenes').item.json.introText : $('Parse Script Scenes').item.json.outroText }}\"\n    }\n  }],\n  \"dimension\": {\n    \"width\": 1080,\n    \"height\": 1920\n  }\n}"
+      },
+      "id": "heygen-generate",
+      "name": "Generate Talking Head",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [2960, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "heygen-credentials",
+          "name": "HeyGen API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.heygen.com/v1/video_status.get?video_id={{ $json.data.video_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "heygen-poll",
+      "name": "Poll HeyGen Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [3180, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "heygen-credentials",
+          "name": "HeyGen API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $json.type === 'intro' ? '00_TALK_START' : '99_TALK_END' }}.mp4",
+        "binaryPropertyName": "data"
+      },
+      "id": "save-talking-head",
+      "name": "Save Talking Head",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [3400, 300]
+    },
+    {
+      "parameters": {
+        "content": "## 6. Animation\n\nKling AI video generation",
+        "height": 80,
+        "width": 280,
+        "color": 3
+      },
+      "id": "note-kling",
+      "name": "Kling Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [2940, 480]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.type }}",
+              "value2": "scene"
+            }
+          ]
+        }
+      },
+      "id": "filter-kling",
+      "name": "Is Middle Scene?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [2960, 580]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.klingai.com/v1/videos/image2video",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"image\": \"{{ $binary.data.base64 }}\",\n  \"prompt\": \"{{ $json.text }}, cinematic motion, smooth camera movement, professional cinematography\",\n  \"duration\": \"5\",\n  \"cfg_scale\": 0.5,\n  \"mode\": \"std\"\n}"
+      },
+      "id": "kling-generate",
+      "name": "Generate Kling Animation",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [3180, 580],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "kling-credentials",
+          "name": "Kling AI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.klingai.com/v1/videos/image2video/{{ $json.data.task_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "kling-poll",
+      "name": "Poll Kling Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [3400, 580],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "kling-credentials",
+          "name": "Kling AI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $json.filename }}_animated.mp4",
+        "binaryPropertyName": "data"
+      },
+      "id": "save-kling-video",
+      "name": "Save Animated Clip",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [3620, 580]
+    },
+    {
+      "parameters": {
+        "content": "## 7. Video Assembly\n\nFFmpeg concatenation",
+        "height": 80,
+        "width": 280,
+        "color": 1
+      },
+      "id": "note-assembly",
+      "name": "Assembly Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [3840, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate FFmpeg concat file and command\nconst files = $input.all().map(item => item.json);\n\n// Sort by filename\nfiles.sort((a, b) => {\n  const aNum = parseInt(a.filename.replace(/\\D/g, '')) || 0;\n  const bNum = parseInt(b.filename.replace(/\\D/g, '')) || 0;\n  return aNum - bNum;\n});\n\n// Create concat list\nlet concatList = '';\nfor (const file of files) {\n  const ext = file.type === 'scene' ? '_animated.mp4' : '.mp4';\n  concatList += `file '${file.filename}${ext}'\\n`;\n}\n\n// FFmpeg command for assembly with transitions\nconst ffmpegCmd = `ffmpeg -f concat -safe 0 -i concat_list.txt -c:v libx264 -preset medium -crf 23 -c:a aac -b:a 128k -movflags +faststart assembled_video.mp4`;\n\nreturn {\n  concatList,\n  ffmpegCommand: ffmpegCmd,\n  fileCount: files.length\n};"
+      },
+      "id": "prepare-assembly",
+      "name": "Prepare Assembly",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [3860, 300]
+    },
+    {
+      "parameters": {
+        "command": "={{ $json.ffmpegCommand }}"
+      },
+      "id": "ffmpeg-concat",
+      "name": "FFmpeg Assembly",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [4080, 300]
+    },
+    {
+      "parameters": {
+        "content": "## 8. Captions & Final\n\nSubMagic enhancement",
+        "height": 80,
+        "width": 280,
+        "color": 4
+      },
+      "id": "note-submagic",
+      "name": "SubMagic Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [4280, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.submagic.co/v1/videos",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"video\": \"{{ $binary.data.base64 }}\",\n  \"options\": {\n    \"captions\": {\n      \"enabled\": true,\n      \"style\": \"dynamic\",\n      \"animation\": \"pop\"\n    },\n    \"zooms\": {\n      \"enabled\": true,\n      \"intensity\": \"medium\"\n    },\n    \"hook_enhancer\": {\n      \"enabled\": true,\n      \"platform\": \"tiktok\"\n    },\n    \"background_music\": {\n      \"enabled\": true,\n      \"genre\": \"cinematic\",\n      \"volume\": 0.3\n    }\n  }\n}"
+      },
+      "id": "submagic-process",
+      "name": "Add Captions & Effects",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [4300, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "submagic-credentials",
+          "name": "SubMagic API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.submagic.co/v1/videos/{{ $json.id }}/status",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth"
+      },
+      "id": "submagic-poll",
+      "name": "Poll SubMagic Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [4520, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "submagic-credentials",
+          "name": "SubMagic API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=FINAL_{{ $('Production Input Form').item.json['Client Name'] }}_{{ new Date().toISOString().split('T')[0] }}.mp4",
+        "binaryPropertyName": "data"
+      },
+      "id": "save-final",
+      "name": "Save Final Video",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "typeVersion": 1,
+      "position": [4740, 300]
+    },
+    {
+      "parameters": {
+        "content": "✅ Final Deliverable",
+        "height": 60,
+        "width": 200,
+        "color": 4
+      },
+      "id": "note-final",
+      "name": "Final Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [4940, 280]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "status",
+              "value": "completed"
+            },
+            {
+              "name": "outputFile",
+              "value": "=FINAL_{{ $('Production Input Form').item.json['Client Name'] }}_{{ new Date().toISOString().split('T')[0] }}.mp4"
+            }
+          ]
+        }
+      },
+      "id": "output-success",
+      "name": "Output Success",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [4960, 300]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Production Input Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Production Input Form": {
+      "main": [
+        [
+          {
+            "node": "Generate Initial Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Initial Script": {
+      "main": [
+        [
+          {
+            "node": "Refine Script to 30s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refine Script to 30s": {
+      "main": [
+        [
+          {
+            "node": "Parse Script Scenes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Script Scenes": {
+      "main": [
+        [
+          {
+            "node": "Generate Voiceover",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split Into Scenes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Voiceover": {
+      "main": [
+        [
+          {
+            "node": "Save Voiceover MP3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Into Scenes": {
+      "main": [
+        [
+          {
+            "node": "Generate Scene Images",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Scene Images": {
+      "main": [
+        [
+          {
+            "node": "Poll for Image Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Poll for Image Result": {
+      "main": [
+        [
+          {
+            "node": "Image Ready?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Image Ready?": {
+      "main": [
+        [
+          {
+            "node": "Download Image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait 10s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 10s": {
+      "main": [
+        [
+          {
+            "node": "Poll for Image Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Image": {
+      "main": [
+        [
+          {
+            "node": "Save Scene Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Scene Image": {
+      "main": [
+        [
+          {
+            "node": "Is Start or End?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Is Middle Scene?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Start or End?": {
+      "main": [
+        [
+          {
+            "node": "Upscale Image",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate Talking Head",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upscale Image": {
+      "main": [
+        [
+          {
+            "node": "Generate Talking Head",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Talking Head": {
+      "main": [
+        [
+          {
+            "node": "Poll HeyGen Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Poll HeyGen Status": {
+      "main": [
+        [
+          {
+            "node": "Save Talking Head",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Middle Scene?": {
+      "main": [
+        [
+          {
+            "node": "Generate Kling Animation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Kling Animation": {
+      "main": [
+        [
+          {
+            "node": "Poll Kling Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Poll Kling Status": {
+      "main": [
+        [
+          {
+            "node": "Save Animated Clip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Animated Clip": {
+      "main": [
+        [
+          {
+            "node": "Prepare Assembly",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Talking Head": {
+      "main": [
+        [
+          {
+            "node": "Prepare Assembly",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Assembly": {
+      "main": [
+        [
+          {
+            "node": "FFmpeg Assembly",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FFmpeg Assembly": {
+      "main": [
+        [
+          {
+            "node": "Add Captions & Effects",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Captions & Effects": {
+      "main": [
+        [
+          {
+            "node": "Poll SubMagic Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Poll SubMagic Status": {
+      "main": [
+        [
+          {
+            "node": "Save Final Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Final Video": {
+      "main": [
+        [
+          {
+            "node": "Output Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "AI Video Production",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "1"
+}
