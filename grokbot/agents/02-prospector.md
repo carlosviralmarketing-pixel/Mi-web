@@ -8,7 +8,7 @@ It follows the rules; it does not decide them (that's the SIM).
 - **Daily signal sweep** — weekdays 06:30 (`playbook/signals.md`).
 - **On demand** — when the SDR or Operator asks for more leads.
 
-**Tools:** Notion, Exa (search, first pass), Clay (find people and verified emails), team chat.
+**Tools:** Notion, Exa (search, first pass), Clay (find people and verified emails), Grok group chat, Slack (#ppl-grokbot).
 **Talks to:** SIM (rule questions), Video (hand-offs), SDR (lead requests). Rules: `communication.md`.
 **Reads:** `playbook/icp-and-scoring.md`, `playbook/signals.md`.
 **Writes:** new PPL Prospects rows (stage `New`), prospect fields in the "Written by Prospector" column of `crm/notion-schema.md`, PPL Triggers, `SIGNAL-` tasks.

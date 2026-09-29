@@ -62,6 +62,55 @@ SIM ──rules/batch──► Prospector ──leads ready──► Video ─�
                      Operator: stand-up host, blockers, escalation to humans
 ```
 
+## Where this happens (Grok Bot + Slack)
+
+Based on the Grok Bot docs (docs.x.ai/grok-bot — "Message and collaborate", "Skills and routines", "Create and manage Bots", FAQ).
+
+### Grok Bot group chat = the office (bots work here)
+
+- One group chat, **"PPL Outreach"**, with the 6 bots: Operator, SIM, Prospector, Video, SDR, Admin.
+  Grok Bot allows **max ~6 bots per group chat** (and ~50 per account), so we're exactly at the limit: **don't add a 7th bot to this chat**.
+  If we need more later, the extra bot works in a separate chat and the Operator relays.
+- Bots in a group chat can pass work, assign ownership and message/trigger each other asynchronously. That's our hand-offs.
+- **Mentions:** `@Bot` when one bot owns the ask · several `@` only if each is really needed · `@everyone` only for the stand-up and big updates.
+- **Threads:** one thread per result or per approval (e.g. "Video batch 2026-09-29", "Reply from Cole @ Cogent"). Keeps the main chat readable.
+- **Stand-up** is a scheduled routine on the Operator (weekdays 08:00) that posts in the group chat and `@everyone`.
+- Carlos (and whoever has access) can jump into the chat or a thread any time.
+
+### Slack = where the humans are (summaries, approvals, alerts)
+
+Slack is a native Grok Bot connector and a supported **routine trigger**, so it's the right bridge to the team.
+Create one channel, **#ppl-grokbot**, and use it only for:
+
+| What | Posted by | Who reads / acts |
+|---|---|---|
+| Stand-up summary (5 lines) | Operator | Carlos, Adriano, Danny |
+| Drafts waiting for approval (link to thread) | SDR | Danny |
+| Videos waiting for QA | Video | Danny |
+| Meeting booked + briefing link | Admin | Carlos, Adriano |
+| Blockers / escalations | Operator | Carlos, Adriano |
+
+Danny (or anyone) can write in #ppl-grokbot, e.g. "@SDR Cole replied on LinkedIn, draft an answer", and the message triggers the bot's routine.
+Detailed bot-to-bot chatter **stays in Grok Bot**, not in Slack.
+
+**Why not WhatsApp:** Grok Bot has no native WhatsApp connector. It needs a third-party bridge (Composio, Albato…), which means another vendor seeing prospect data and another thing that can break. Slack does it natively.
+
+### Grok Bot features we rely on
+
+| Feature | How we use it |
+|---|---|
+| **Bots** (one per role, own memory) | One bot per runbook in `agents/`. The runbook is the bot's instructions |
+| **Skills** (shared across bots) | Playbook procedures: scoring, signal sweep, video generation, cadence step, briefing |
+| **Routines — scheduled** | Stand-up, weekly lead run, daily sweep, video batches, SDR runs, end of day |
+| **Routines — triggers** | Slack message in #ppl-grokbot; GitHub event (playbook changed → SIM re-reads it) |
+| **Approvals** | Bots ask before changing external systems. Every send waits for a human OK |
+| **Memory** | Preferences and working notes only. Docs are explicit: memory is not an authoritative source. **Notion is.** |
+
+### Known gap: no email trigger
+
+Grok Bot can't currently run a routine when a new email arrives. So the SDR checks the inbox **on a schedule**
+(09:00 and 15:00 — add more slots if replies wait too long). A LinkedIn/email reply is never "noticed" instantly.
+
 ## Sending rule (unchanged)
 
 **No agent sends anything to a prospect until Carlos and Adriano say the whole system is ready.**

@@ -4,7 +4,7 @@ Decisions needed before (or while) each phase is built. Tick them off here as th
 
 | # | Question | Needed for | Owner |
 |---|---|---|---|
-| 1 | How does Grokbot do per-agent schedules and agent-to-agent messages? Where does the stand-up happen (shared channel, Slack, WhatsApp)? | All | Carlos |
+| 1 | ~~Where do agents talk?~~ **Decided:** Grok Bot group chat for bots, Slack #ppl-grokbot for humans (`communication.md`). Still to do: create the Slack channel and connect Slack to Grok Bot | All | Carlos |
 | 2 | One email account per bot — which addresses, and does the SDR send from Danny's account or its own? | Phase 3 | Carlos |
 | 3 | Cadence: does the video go on email **and** LinkedIn, or LinkedIn only when email is missing? | Phase 3 | Adriano |
 | 4 | Daily caps: first touches per day (LinkedIn weekly invite limit), emails per day per inbox | Phase 3 | Carlos |
@@ -15,4 +15,5 @@ Decisions needed before (or while) each phase is built. Tick them off here as th
 | 9 | The "$300 for you" pharma special: who qualifies and what exactly is offered? | Phase 3 | Adriano |
 | 10 | Which classifier model for scoring / track assignment? | Phase 1 | Carlos |
 | 11 | Video prompt templates per segment (`playbook/video-prompts.md`) | Phase 2 | Carlos |
+| 13 | Can Grok Bot bots read files straight from this GitHub repo, or do we load the playbooks as Skills? | Phase 1 | Carlos |
 | 12 | LinkedIn access for the SDR: which tool/account, and is automated sending allowed under our risk tolerance? | Phase 5 | Carlos + Adriano |

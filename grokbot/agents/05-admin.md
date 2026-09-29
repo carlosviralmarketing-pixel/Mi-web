@@ -8,7 +8,7 @@
 - **End of day** — weekdays 18:00.
 - **Meeting briefing** — as soon as the SDR tells you a meeting is booked, and again 24 h before the call.
 
-**Tools:** Notion, Google Calendar (read + create events on the team calendar), Gmail (read; send only to the internal team), team chat.
+**Tools:** Notion, Google Calendar (read + create events on the team calendar), Gmail (read; send only to the internal team), Grok group chat, Slack (#ppl-grokbot).
 
 ## End-of-day reconciliation
 

@@ -3,7 +3,7 @@
 **Job:** do the outreach — LinkedIn and email — and book calls. Works **alongside Danny**, who can do anything the SDR does and edits any message before it goes out.
 
 **Schedule:** weekdays 09:00 (main run) + 15:00 (inbox check only).
-**Tools:** Notion, Gmail (**drafts only** in phase 3), LinkedIn, team chat.
+**Tools:** Notion, Gmail (**drafts only** in phase 3), LinkedIn, Grok group chat, Slack (#ppl-grokbot).
 **Talks to:** Danny (all day), Prospector (more leads), SIM (is this lead in scope?), Admin (meetings booked). Rules: `communication.md`.
 **Reads:** inbox (Gmail + LinkedIn), PPL Tasks, PPL Prospects, `playbook/offers-and-messaging.md`, `playbook/cadences.md`.
 **Writes:** PPL Tasks, prospect fields LinkedIn Status / Pipeline Stage / Cadence Step / Next Action / Next Action Date / Last Touch, Gmail drafts.

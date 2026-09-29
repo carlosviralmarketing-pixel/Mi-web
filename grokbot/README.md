@@ -38,6 +38,8 @@ Agents work like a team: **they talk to each other and they keep the CRM updated
 - **Direct messages** during the day for hand-offs, requests, questions and blockers.
 - **Golden rule:** update Notion first, then send the message that links to it.
 
+Bots talk in a **Grok Bot group chat** (max ~6 bots per chat, which is exactly our team). Humans get summaries, approvals and alerts in **Slack #ppl-grokbot**.
+
 Full rules: [`communication.md`](communication.md). The pipeline stages in `crm/notion-schema.md` are the *record*
 of where each lead is; the messages are how the next agent finds out.
 
@@ -45,7 +47,7 @@ of where each lead is; the messages are how the next agent finds out.
 
 | # | Agent | Runs | Reads | Writes | Tools (only these) |
 |---|---|---|---|---|---|
-| 00 | [Operator](agents/00-operator.md) | Stand-up 08:00 + on blockers | Stand-up reports, Notion | Summaries, escalations | Notion, team chat |
+| 00 | [Operator](agents/00-operator.md) | Stand-up 08:00 + on blockers | Stand-up reports, Notion | Summaries, escalations | Notion, Grok group chat, Slack |
 | 01 | [Sales Intelligence Manager](agents/01-sales-intelligence-manager.md) | Weekly (Mon) | Prospects, Triggers, results | `playbook/` edits (human OKs first) | Notion (read), GitHub |
 | 02 | [Prospector](agents/02-prospector.md) | Weekly (Tue) + daily signal sweep | playbook, Prospects | Prospects, Triggers | Notion, Exa, Clay |
 | 03 | [Video Automation](agents/03-video-automation.md) | Every 2 h on weekdays | Prospects `Ready for Video` | Video URL, Tracking ID, stage | Notion, Higgsfield, Cloudflare |

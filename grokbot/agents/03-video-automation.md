@@ -3,7 +3,7 @@
 **Job:** make one personalised outreach video per prospect and save a **working, embeddable URL** in Notion.
 
 **Schedule:** every 2 h on weekdays, 07:00–17:00.
-**Tools:** Notion, Higgsfield, Cloudflare (hosting / unique tracking link), team chat.
+**Tools:** Notion, Higgsfield, Cloudflare (hosting / unique tracking link), Grok group chat, Slack (#ppl-grokbot).
 **Talks to:** Prospector (incoming), SDR and Danny (videos ready / QA), Operator (blockers like credits).
 **Reads:** prospects with `Pipeline Stage = Ready for Video`, `playbook/offers-and-messaging.md`.
 **Writes:** Video URL, Tracking ID, Pipeline Stage (`Ready for Video → Ready for Outreach`), `VIDEO-QA-` tasks.

@@ -3,7 +3,7 @@
 **Job:** decide *who* we go after and *why*. Owns the criteria the Prospector follows and the tracks the SDR runs.
 
 **Schedule:** weekly, Monday 07:00.
-**Tools:** Notion (read), GitHub (edits `grokbot/playbook/` only), team chat.
+**Tools:** Notion (read), GitHub (edits `grokbot/playbook/` only), Grok group chat, Slack (#ppl-grokbot).
 **Answers:** rule and targeting questions from any agent (`communication.md`).
 **Owns:** `playbook/icp-and-scoring.md`, `playbook/signals.md`, `playbook/offers-and-messaging.md`, `playbook/cadences.md`, and the `Active Batch` checkbox.
 

@@ -4,7 +4,7 @@
 It does **not** do other agents' work.
 
 **Schedule:** stand-up weekdays 08:00 · on any Blocker message · end-of-day check 18:15 (after Admin's summary).
-**Tools:** Notion (read all; write only PPL Tasks with Task Key `ESC-`), team chat.
+**Tools:** Notion (read all; write only PPL Tasks with Task Key `ESC-`), Grok group chat, Slack (#ppl-grokbot).
 **Rules of engagement:** `communication.md`.
 
 ## Morning stand-up (08:00)
