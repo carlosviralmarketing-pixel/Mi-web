@@ -1,6 +1,7 @@
 # Notion CRM schema
 
-Notion holds **data only**. Rules live in `grokbot/playbook/` in Git.
+Notion holds **data only**. Rules live only in `grokbot/playbook/` in Git — no copies in Notion.
+Agents also message each other (`communication.md`); Notion is the record, messages are how work moves.
 
 Existing databases (keep them, do not rebuild):
 
@@ -9,7 +10,7 @@ Existing databases (keep them, do not rebuild):
 | **PPL Prospects** | One row per person (907 as of 2026-09-29) |
 | **PPL Triggers** | Dated, evidenced buying signals, linked to prospects |
 | **PPL Tasks** | Work items for Danny / the SDR (follow-ups, replies, lead requests, video QA) |
-| **Signal sweep — run log** | Page `3e7411eb002481b8b8cfd496431fd92c` |
+| **Signal sweep — run log** | Page `3e7411eb002481b8b8cfd496431fd92c` (old; replaced by the daily log below) |
 | **Signal sweep — spec** | Page `3e7411eb002481e595f5dd4475608768` (to be moved into `playbook/signals.md`) |
 
 Current counts:
@@ -74,8 +75,8 @@ New ──► Ready for Video ──► Ready for Outreach ──► In Cadence 
 
 | Field | Values |
 |---|---|
-| Task Key | Prefix = who created it: `SIGNAL-`, `CADENCE-`, `REPLY-`, `VIDEO-QA-`, `LEAD-REQ-`, `BRIEF-` |
-| Type | `Reply` · `Follow-up` · `First touch` · `Video QA` · `Lead Request` · `Briefing` · `Escalation` |
+| Task Key | Prefix = who created it: `SIGNAL-`, `CADENCE-`, `REPLY-`, `VIDEO-QA-`, `BRIEF-`, `ESC-` |
+| Type | `Reply` · `Follow-up` · `First touch` · `Video QA` · `Briefing` · `Escalation` |
 | Prospect | relation |
 | Trigger | relation (optional) |
 | Due | date |
@@ -83,12 +84,10 @@ New ──► Ready for Video ──► Ready for Outreach ──► In Cadence 
 | Status | `Open` · `Done` · `Cancelled` |
 | Draft | Message text, first line `DRAFT` until approved |
 
-## Run logs
+## Daily log
 
-One Notion page per agent (or one shared page with a column for the agent). Format of each line:
+The stand-up is the daily report. The Operator saves its summary to one Notion page ("Grokbot — daily log"), one entry per day:
 
 ```
-2026-09-29 09:04 | SDR | ok | replies 2, follow-ups 5, first touches 8, tasks 3 | <notes or error>
+2026-09-29 | Prospector ok (+24 leads) | Video ok (8) | SDR ok (2 replies, 11 drafts) | Admin ok | Blockers: Higgsfield credits
 ```
-
-Status is `ok`, `partial` or `failed`. A missing line counts as `failed` for the Operator.

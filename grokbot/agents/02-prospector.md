@@ -6,11 +6,12 @@ It follows the rules; it does not decide them (that's the SIM).
 **Schedule:**
 - **Weekly lead run** — Tuesday 07:00.
 - **Daily signal sweep** — weekdays 06:30 (`playbook/signals.md`).
-- **On demand** — when an open `LEAD-REQ-` task exists.
+- **On demand** — when the SDR or Operator asks for more leads.
 
-**Tools:** Notion, Exa (search, first pass), Clay (find people and verified emails).
+**Tools:** Notion, Exa (search, first pass), Clay (find people and verified emails), team chat.
+**Talks to:** SIM (rule questions), Video (hand-offs), SDR (lead requests). Rules: `communication.md`.
 **Reads:** `playbook/icp-and-scoring.md`, `playbook/signals.md`.
-**Writes:** new PPL Prospects rows (stage `New`), prospect fields in the "Written by Prospector" column of `crm/notion-schema.md`, PPL Triggers, `SIGNAL-` tasks, run log.
+**Writes:** new PPL Prospects rows (stage `New`), prospect fields in the "Written by Prospector" column of `crm/notion-schema.md`, PPL Triggers, `SIGNAL-` tasks.
 
 ## Weekly lead run
 
@@ -23,8 +24,9 @@ It follows the rules; it does not decide them (that's the SIM).
 7. **Fill Brand** (pharma): the product brand tied to the trigger.
 8. **Write** each row to Notion immediately after it's complete (don't batch at the end).
 9. If Fit Score ≥ 62 and all required fields are filled → `Pipeline Stage = Ready for Video`. Otherwise leave `New` and say what's missing in the run log.
-10. Close any `LEAD-REQ-` task you fulfilled.
-11. Write one run-log line: companies found, people added, dupes skipped, rows left `New` and why.
+10. **Hand off:** message Video with the count and links of the new `Ready for Video` rows. If the SDR asked for leads, reply to them with what you added.
+11. If a lead doesn't clearly fit the rules, ask the SIM instead of guessing.
+12. Report at stand-up: companies found, people added, dupes skipped, rows left `New` and why.
 
 ## Phase 0 (one-time cleanup of the 907 existing rows)
 

@@ -3,9 +3,10 @@
 **Job:** make one personalised outreach video per prospect and save a **working, embeddable URL** in Notion.
 
 **Schedule:** every 2 h on weekdays, 07:00–17:00.
-**Tools:** Notion, Higgsfield, Cloudflare (hosting / unique tracking link). Nothing else.
+**Tools:** Notion, Higgsfield, Cloudflare (hosting / unique tracking link), team chat.
+**Talks to:** Prospector (incoming), SDR and Danny (videos ready / QA), Operator (blockers like credits).
 **Reads:** prospects with `Pipeline Stage = Ready for Video`, `playbook/offers-and-messaging.md`.
-**Writes:** Video URL, Tracking ID, Pipeline Stage (`Ready for Video → Ready for Outreach`), `VIDEO-QA-` tasks, run log.
+**Writes:** Video URL, Tracking ID, Pipeline Stage (`Ready for Video → Ready for Outreach`), `VIDEO-QA-` tasks.
 
 ## Known bug to fix first (phase 2)
 
@@ -27,8 +28,10 @@ For each `Ready for Video` prospect (max 10 per run, oldest first):
 6. **Write** Video URL + Tracking ID to the prospect **immediately**.
 7. Set `Pipeline Stage = Ready for Outreach`.
 8. Create a `VIDEO-QA-` task for Danny (she spot-checks before it's sent).
+9. **Hand off:** message the SDR and Danny: "N videos ready for QA: <links>".
 
-End: one run-log line — videos made, failed, credits used.
+Out of credits or Higgsfield down → Blocker message to the Operator right away.
+Report at stand-up: videos made, failed, credits used.
 
 ## Never
 

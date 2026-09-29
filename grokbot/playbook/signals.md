@@ -2,7 +2,7 @@
 
 Owner: **Sales Intelligence Manager**. Executed by: **Prospector**.
 Source: *Daily Signal Sweep Routine* (spec version 2026-09-26.6). The detailed method still lives on the Notion page
-"Signal sweep — spec" (`3e7411eb002481e595f5dd4475608768`). **TODO:** copy its Part 1 here so Git is the single source of truth, then make the Notion page a read-only mirror.
+"Signal sweep — spec" (`3e7411eb002481e595f5dd4475608768`). **TODO:** copy its Part 1 here, then archive the Notion page. Rules live in one place only.
 
 ## Goal
 
@@ -38,9 +38,9 @@ Cancel open `SIGNAL-` tasks for anyone who became Do Not Contact / Lost / Won / 
 
 ## Writes allowed
 
-PPL Triggers · Buying Signal field of PPL Prospects · PPL Tasks rows whose Task Key starts `SIGNAL-` · the run log.
+PPL Triggers · Buying Signal field of PPL Prospects · PPL Tasks rows whose Task Key starts `SIGNAL-`.
 Never: send messages, edit stage / cadence / Operator / Next Action, create prospects, campaigns or trigger types, change schemas, delete anything.
 
 ## End of run
 
-One run-log line, mandatory even when nothing was found or something failed, plus links to any tasks created.
+Message Danny and the SDR with links to any `SIGNAL-` tasks created. Report at stand-up, even when nothing was found or something failed.
