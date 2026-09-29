@@ -23,7 +23,7 @@ It follows the rules; it does not decide them (that's the SIM).
 6. **Score** each person with the rubric → Fit Score, Priority. Assign **Track** from the SIM's track list. (Classifier model is fine for this step; it only outputs numbers and a track name.)
 7. **Fill Brand** (pharma): the product brand tied to the trigger.
 8. **Write** each row to Notion immediately after it's complete (don't batch at the end).
-9. If Fit Score ≥ 62 and all required fields are filled → `Pipeline Stage = Ready for Video`. Otherwise leave `New` and say what's missing in the run log.
+9. If Fit Score ≥ 62 and all required fields are filled → `Pipeline Stage = Ready for Video`. Otherwise leave `New` and say what's missing at stand-up.
 10. **Hand off:** message Video with the count and links of the new `Ready for Video` rows. If the SDR asked for leads, reply to them with what you added.
 11. If a lead doesn't clearly fit the rules, ask the SIM instead of guessing.
 12. Report at stand-up: companies found, people added, dupes skipped, rows left `New` and why.
